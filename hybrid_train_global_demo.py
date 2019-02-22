@@ -6,6 +6,10 @@ Load the demonstration into replay memory and reservoid memory
 """
 from __future__ import print_function
 from Model.GEM_end2end_model import End2EndMPNet
+import Model.model as model
+import Model.model_c2d as model_c2d
+import Model.AE.CAE_r3d as CAE_r3d
+import Model.AE.CAE as CAE
 import numpy as np
 import argparse
 import os
@@ -18,9 +22,8 @@ import random
 import time
 from utility import *
 from plan_general import *
-import plan_s2d
-from utility_s2d import *
-from utility_c2d import *
+import plan_s2d, plan_c2d
+import utility_s2d, utility_c2d
 DEFAULT_STEP = 0.05
 def main(args):
     # set seed
@@ -31,16 +34,26 @@ def main(args):
     np.random.seed(np_seed)
     random.seed(py_seed)
     # Create model directory
-    # Depending on env type, load the planning function
-    if args.env_type == 's2d':
-        IsInCollision = plan_s2d.IsInCollision
-    elif args.env_type == 'c2d':
-        pass
+
     # Build the models
     if torch.cuda.is_available():
         torch.cuda.set_device(args.device)
     mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
                 args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
+    # Depending on env type, load the planning function
+    if args.env_type == 's2d':
+        IsInCollision = plan_s2d.IsInCollision
+        normalize = utility_s2d.normalize
+        unnormalize = utility_s2d.unnormalize
+        mpNet.encoder = CAE()
+        mpNet.mlp = model(args.mlp_input_size, args.output_size)
+    elif args.env_type == 'c2d':
+        IsInCollision = plan_c2d.IsInCollision
+        normalize = utility_c2d.normalize
+        unnormalize = utility_c2d.unnormalize
+        mpNet.encoder = CAE()
+        mpNet.mlp = model_c2d(args.mlp_input_size, args.output_size)
+
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
         load_net_state(mpNet, os.path.join(args.model_path, model_path))

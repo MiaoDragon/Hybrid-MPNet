@@ -51,7 +51,6 @@ class End2EndMPNet(nn.Module):
         self.grad_step = grad_step
         self.total_input_size = total_input_size
         self.AE_input_size = AE_input_size
-
     def clear_memory(self):
         # set the counter to 0
         self.mem_cnt[:] = 0

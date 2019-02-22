@@ -14,14 +14,17 @@ here for simplicity, we just use single-process to simulate this scenario
 from __future__ import print_function
 from Model.GEM_end2end_model import End2EndMPNet
 #from GEM_end2end_model_rand import End2EndMPNet as End2EndMPNet_rand
-#from gem_observer import Observer
+import Model.model as model
+import Model.model_c2d as model_c2d
+import Model.AE.CAE_r3d as CAE_r3d
+import Model.AE.CAE as CAE
 import numpy as np
 import argparse
 import os
 import torch
 from gem_eval import eval_tasks
 # collision checker
-import plan_s2d
+import plan_s2d, plan_c2d
 
 from data_loader import load_test_dataset
 from torch.autograd import Variable
@@ -29,8 +32,7 @@ import copy
 import os
 import random
 from utility import *
-from utility_c2d import *
-from utility_s2d import *
+import utility_s2d, utility_c2d
 def main(args):
     # set seed
     torch_seed = np.random.randint(low=0, high=1000)
@@ -49,6 +51,19 @@ def main(args):
         #mpNet = End2EndMPNet_rand(args.mlp_input_size, args.output_size, 'deep', \
         #            args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
         pass
+    # setup evaluation function
+    if args.env_type == 's2d':
+        IsInCollision = plan_s2d.IsInCollision
+        normalize = utility_s2d.normalize
+        unnormalize = utility_s2d.unnormalize
+        mpNet.encoder = CAE()
+        mpNet.mlp = model(args.mlp_input_size, args.output_size)
+    elif args.env_type == 'c2d':
+        IsInCollision = plan_c2d.IsInCollision
+        normalize = utility_c2d.normalize
+        unnormalize = utility_c2d.unnormalize
+        mpNet.encoder = CAE()
+        mpNet.mlp = model_c2d(args.mlp_input_size, args.output_size)
     # load previously trained model if start epoch > 0
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
@@ -71,11 +86,7 @@ def main(args):
     seen_test_data = load_test_dataset(N=100, NP=200, s=0, sp=4000, folder=args.data_path)
     unseen_test_data = load_test_dataset(N=10, NP=2000,s=100, sp=0, folder=args.data_path)
     # test
-    # setup evaluation function
-    if args.env_type == 's2d':
-        IsInCollision = plan_s2d.IsInCollision
-    elif args.env_type == 'c2d':
-        pass
+
     # testing
     print('testing...')
     seen_test_suc_rate = 0.
