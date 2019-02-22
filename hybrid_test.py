@@ -12,8 +12,8 @@ and call the network to train if a new data is available
 here for simplicity, we just use single-process to simulate this scenario
 '''
 from __future__ import print_function
-from GEM_end2end_model import End2EndMPNet
-from GEM_end2end_model_rand import End2EndMPNet as End2EndMPNet_rand
+from Model.GEM_end2end_model import End2EndMPNet
+#from GEM_end2end_model_rand import End2EndMPNet as End2EndMPNet_rand
 #from gem_observer import Observer
 import numpy as np
 import argparse
@@ -45,8 +45,9 @@ def main(args):
         mpNet = End2EndMPNet(args.mlp_input_size, args.output_size, 'deep', \
                     args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
     elif args.memory_type == 'rand':
-        mpNet = End2EndMPNet_rand(args.mlp_input_size, args.output_size, 'deep', \
-                    args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
+        #mpNet = End2EndMPNet_rand(args.mlp_input_size, args.output_size, 'deep', \
+        #            args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
+        pass
     # load previously trained model if start epoch > 0
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
