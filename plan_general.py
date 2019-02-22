@@ -83,6 +83,7 @@ def neural_replan(mpNet, path, obc, obs, IsInCollision, unnormalize, step_sz=DEF
 
 def neural_replanner(mpNet, start, goal, obc, obs, IsInCollision, unnormalize, step_sz=DEFAULT_STEP):
     # plan a mini path from start to goal
+    # obs: tensor
     MAX_LENGTH = 80
     itr=0
     pA=[]
