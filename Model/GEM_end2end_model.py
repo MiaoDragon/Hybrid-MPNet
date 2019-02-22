@@ -1,9 +1,9 @@
 import Model.AE.CAE_simple as CAE_simple
 import Model.AE.CAE_deep as CAE_deep
-from model import MLP
+from Model.model import MLP
 import torch.nn as nn
 import torch
-from gem_utility import *
+from Model.gem_utility import *
 import numpy as np
 import copy
 # Auxiliary functions useful for GEM's inner optimization.
