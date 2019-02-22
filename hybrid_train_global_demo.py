@@ -117,10 +117,10 @@ def main(args):
         for i in range(len(paths)):
             time_path = []
             for j in range(len(paths[i])):
-                time0 = time.time()
                 print('epoch: %d, training... env: %d, path: %d' % (epoch, i+1, j+1))
                 if path_lengths[i][j] == 0:
                     continue
+                time0 = time.time()
                 fp = False
                 path = [torch.from_numpy(paths[i][j][0]).type(torch.FloatTensor),\
                         torch.from_numpy(paths[i][j][path_lengths[i][j]-1]).type(torch.FloatTensor)]
