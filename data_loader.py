@@ -134,8 +134,6 @@ def load_test_dataset(N=100,NP=200, s=0,sp=4000, folder='../data/simple/'):
 		for j in range(0,7):
 			for k in range(0,2):
 				obc[i][j][k]=obs[perm[i+s][j]][k]
-	print(obc[0])
-	print(obc[5])
 
 	obs = []
 	k=0
