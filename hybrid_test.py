@@ -83,8 +83,8 @@ def main(args):
         load_opt_state(mpNet, os.path.join(args.model_path, model_path))
     # load train and test data
     print('loading...')
-    seen_test_data = load_test_dataset(N=100, NP=200, s=0, sp=4000, folder=args.data_path)
-    unseen_test_data = load_test_dataset(N=10, NP=2000,s=100, sp=0, folder=args.data_path)
+    seen_test_data = load_test_dataset(N=args.N, NP=args.NP, s=args.s, sp=args.sp, folder=args.data_path)
+    unseen_test_data = load_test_dataset(N=args.N, NP=args.NP, s=args.s, sp=args.sp, folder=args.data_path)
     # test
 
     # testing
@@ -118,10 +118,17 @@ def main(args):
 
 
 parser = argparse.ArgumentParser()
-# for training
+# for testing
 parser.add_argument('--model_path', type=str, default='./models/',help='path for saving trained models')
-parser.add_argument('--no_env', type=int, default=100,help='directory for obstacle images')
-parser.add_argument('--no_motion_paths', type=int,default=4000,help='number of optimal paths in each environment')
+parser.add_argument('--seen_N', type=int, default=0)
+parser.add_argument('--seen_NP', type=int, default=0)
+parser.add_argument('--seen_s', type=int, default=0)
+parser.add_argument('--seen_sp', type=int, default=0)
+parser.add_argument('--unseen_N', type=int, default=0)
+parser.add_argument('--unseen_NP', type=int, default=0)
+parser.add_argument('--unseen_s', type=int, default=0)
+parser.add_argument('--unseen_sp', type=int, default=0)
+
 parser.add_argument('--grad_step', type=int, default=1, help='number of gradient steps in continual learning')
 # for continual learning
 parser.add_argument('--n_tasks', type=int, default=1,help='number of tasks')
