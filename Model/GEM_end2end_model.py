@@ -62,7 +62,6 @@ class End2EndMPNet(nn.Module):
     def forward(self, x):
         # xobs is the input to encoder
         # x is the input to mlp
-        #print(x.shape)
         z = self.encoder(x[:,:2800])
         mlp_in = torch.cat((z,x[:,2800:]), 1)    # keep the first dim the same (# samples)
         return self.mlp(mlp_in)
@@ -86,14 +85,6 @@ class End2EndMPNet(nn.Module):
                 x = x.cuda()
                 y = y.cuda()
             self.remember(x, tasks[i], y)
-            #for k in range(len(xs[i]), batch_size):
-            #    end_idx = min(k+batch_size, len(xs[i]))
-            #    x = tensor.torch(xs[i][k:end_idx])
-            #    y = tensor.torch(ys[i][k:end_idx])
-            #    if torch.cuda.is_available():
-            #        x = x.cuda()
-            #        y = y.cuda()
-            #    self.remember(x, tasks[i], y)
 
     def remember(self, x, t, y):
         # follow reservoir sampling
@@ -115,8 +106,7 @@ class End2EndMPNet(nn.Module):
                     idx = idx[0]
                     self.memory_data[t, idx].copy_(x.data[i])
                     self.memory_labs[t, idx].copy_(y.data[i])
-        #print('after memory...')
-        #print(self.memory_labs[t])
+
     '''
     Below is the added GEM feature
     reference: https://arxiv.org/abs/1706.08840
@@ -201,11 +191,3 @@ class End2EndMPNet(nn.Module):
                 self.old_task = t
                 self.mem_cnt[t] = 0
             self.remember(x, t, y)
-
-    def test_memory(self, x,t,y):
-        if t != self.old_task:
-            # new task, clear mem_cnt
-            self.observed_tasks.append(t)
-            self.old_task = t
-            self.mem_cnt[t] = 0
-        self.remember(x, t, y)

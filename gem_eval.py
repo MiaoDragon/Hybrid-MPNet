@@ -8,10 +8,9 @@ import pickle
 from torch.autograd import Variable
 import math
 import time
-from plan_s2d import *
 from plan_general import *
 
-def eval_tasks(mpNet, test_data, filename, unnormalize_func=lambda x: x):
+def eval_tasks(mpNet, test_data, filename, IsInCollision, unnormalize_func=lambda x: x):
     obc, obs, paths, path_lengths = test_data
     fes_env = []   # list of list
     valid_env = []
