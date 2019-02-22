@@ -1,5 +1,6 @@
 import torch
 import numpy as np
+from utility import *
 DEFAULT_STEP = 0.05
 def steerTo(start, end, obc, IsInCollision, step_sz=DEFAULT_STEP):
     # test if there is a collision free path from start to end, with step size

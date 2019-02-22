@@ -81,7 +81,7 @@ def main(args):
     T = 1
     for _ in range(T):
         # unnormalize function
-        unnormalize_func=lambda x: x / args.world_size
+        unnormalize_func=lambda x: unnormalize(x, world_size)
         # seen
         time_file = os.path.join(args.model_path,'time_seen_epoch_%d_mlp.p' % (args.start_epoch))
         fes_path_, valid_path_ = eval_tasks(mpNet, seen_test_data, time_file, IsInCollision, unnormalize_func)

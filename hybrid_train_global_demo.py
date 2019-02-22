@@ -19,9 +19,7 @@ import time
 from utility import *
 from plan_general import *
 import plan_s2d
-def normalize(x, bound):
-    # normalize to -1 ~ 1
-    return x / bound
+
 DEFAULT_STEP = 0.05
 def main(args):
     # set seed
@@ -127,7 +125,7 @@ def main(args):
                         step_sz = 0.03
                     elif (t > 3):
                         step_sz = 0.02
-                    unnormalize_func = lambda x: x * args.world_size
+                    unnormalize_func = lambda x: unnormalize(x, args.world_size)
                     path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, unnormalize_func, step_sz=step_sz)
                     path = lvc(path, obc[i], IsInCollision, step_sz=step_sz)
                     if feasibility_check(path,obc[i], IsInCollision, step_sz=0.01):
