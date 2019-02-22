@@ -19,7 +19,8 @@ import time
 from utility import *
 from plan_general import *
 import plan_s2d
-
+from utility_s2d import *
+from utility_c2d import *
 DEFAULT_STEP = 0.05
 def main(args):
     # set seed
@@ -30,9 +31,6 @@ def main(args):
     np.random.seed(np_seed)
     random.seed(py_seed)
     # Create model directory
-    md_type = 'deep'
-    if not args.AEtype_deep:
-        md_type = 'simple'
     # Depending on env type, load the planning function
     if args.env_type == 's2d':
         IsInCollision = plan_s2d.IsInCollision
@@ -41,8 +39,8 @@ def main(args):
     # Build the models
     if torch.cuda.is_available():
         torch.cuda.set_device(args.device)
-    mpNet = End2EndMPNet(args.mlp_input_size, args.output_size, md_type, \
-                args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
+    mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
+                args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
         load_net_state(mpNet, os.path.join(args.model_path, model_path))
@@ -201,7 +199,9 @@ parser.add_argument('--n_tasks', type=int, default=1,help='number of tasks')
 parser.add_argument('--n_memories', type=int, default=256, help='number of memories for each task')
 parser.add_argument('--memory_strength', type=float, default=0.5, help='memory strength (meaning depends on memory)')
 # Model parameters
-parser.add_argument('--mlp_input_size', type=int , default=28+4, help='dimension of the input vector')
+parser.add_argument('--total_input_size', type=int, default=2800+4, help='dimension of total input')
+parser.add_argument('--AE_input_size', type=int, default=2800, help='dimension of input to AE')
+parser.add_argument('--mlp_input_size', type=int , default=28+4, help='dimension of the input vector to mlp')
 parser.add_argument('--output_size', type=int , default=2, help='dimension of the input vector')
 
 parser.add_argument('--learning_rate', type=float, default=0.001)

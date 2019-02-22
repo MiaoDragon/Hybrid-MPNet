@@ -29,7 +29,8 @@ import copy
 import os
 import random
 from utility import *
-
+from utility_c2d import *
+from utility_s2d import *
 def main(args):
     # set seed
     torch_seed = np.random.randint(low=0, high=1000)
@@ -42,8 +43,8 @@ def main(args):
     if torch.cuda.is_available():
         torch.cuda.set_device(args.device)
     if args.memory_type == 'res':
-        mpNet = End2EndMPNet(args.mlp_input_size, args.output_size, 'deep', \
-                    args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
+        mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
+                    args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
     elif args.memory_type == 'rand':
         #mpNet = End2EndMPNet_rand(args.mlp_input_size, args.output_size, 'deep', \
         #            args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
@@ -82,7 +83,7 @@ def main(args):
     T = 1
     for _ in range(T):
         # unnormalize function
-        unnormalize_func=lambda x: unnormalize(x, world_size)
+        unnormalize_func=lambda x: unnormalize(x, args.world_size)
         # seen
         time_file = os.path.join(args.model_path,'time_seen_epoch_%d_mlp.p' % (args.start_epoch))
         fes_path_, valid_path_ = eval_tasks(mpNet, seen_test_data, time_file, IsInCollision, unnormalize_func)
@@ -116,6 +117,8 @@ parser.add_argument('--n_tasks', type=int, default=1,help='number of tasks')
 parser.add_argument('--n_memories', type=int, default=256, help='number of memories for each task')
 parser.add_argument('--memory_strength', type=float, default=0.5, help='memory strength (meaning depends on memory)')
 # Model parameters
+parser.add_argument('--total_input_size', type=int, default=2800+4, help='dimension of total input')
+parser.add_argument('--AE_input_size', type=int, default=2800, help='dimension of input to AE')
 parser.add_argument('--mlp_input_size', type=int , default=28+4, help='dimension of the input vector')
 parser.add_argument('--output_size', type=int , default=2, help='dimension of the input vector')
 parser.add_argument('--learning_rate', type=float, default=0.01)
