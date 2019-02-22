@@ -1,5 +1,5 @@
-import AE.CAE_simple as CAE_simple
-import AE.CAE_deep as CAE_deep
+import Model.AE.CAE_simple as CAE_simple
+import Model.AE.CAE_deep as CAE_deep
 from model import MLP
 import torch.nn as nn
 import torch
