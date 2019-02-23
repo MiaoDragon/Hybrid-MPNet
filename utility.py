@@ -1,6 +1,7 @@
 import torch
 from torch.autograd import Variable
 import copy
+import numpy as np
 
 def to_var(x, volatile=False):
     if torch.cuda.is_available():
@@ -29,4 +30,10 @@ def load_opt_state(net, fname):
 def load_seed(fname):
     # load both torch random seed, and numpy random seed
     checkpoint = torch.load(fname)
-    return checkpoint['torch_seed'], checkpoint['np_seed'], checkpoint['py_seed']
+    if 'torch_seed' in checkpoint:
+        return checkpoint['torch_seed'], checkpoint['np_seed'], checkpoint['py_seed']
+    else:
+        torch_seed = np.random.randint(low=0, high=1000)
+        np_seed = np.random.randint(low=0, high=1000)
+        py_seed = np.random.randint(low=0, high=1000)
+        return torch_seed, np_seed, py_seed
