@@ -67,6 +67,7 @@ def main(args):
     # load previously trained model if start epoch > 0
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
+        print('loading previous model...')
         load_net_state(mpNet, os.path.join(args.model_path, model_path))
         torch_seed, np_seed, py_seed = load_seed(os.path.join(args.model_path, model_path))
         # set seed after loading
