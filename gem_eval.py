@@ -52,13 +52,13 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, unnormalize_func=lambd
                     elif (t > 3):
                         step_sz = 0.02
                     path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, unnormalize_func, step_sz=step_sz)
-                    print('before lvc:')
-                    print(path)
+                    #print('before lvc:')
+                    #print(path)
                     path = lvc(path, obc[i], IsInCollision, step_sz=step_sz)
-                    print('iteration %d' % (t))
-                    print(path)
-                    print('feasible on step_sz? %f' % (step_sz))
-                    print(feasibility_check(path,obc[i], IsInCollision, step_sz=step_sz))
+                    #print('iteration %d' % (t))
+                    #print(path)
+                    #print('feasible on step_sz? %f' % (step_sz))
+                    #print(feasibility_check(path,obc[i], IsInCollision, step_sz=step_sz))
                     if feasibility_check(path, obc[i], IsInCollision, step_sz=0.01):
                         fp = 1
                         print('feasible, ok!')
