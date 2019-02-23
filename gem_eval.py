@@ -51,7 +51,8 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, unnormalize_func=lambd
                         step_sz = 0.03
                     elif (t > 3):
                         step_sz = 0.02
-                    path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, unnormalize_func, step_sz=step_sz)
+                    path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
+                                         unnormalize_func, t==0, step_sz=step_sz)
                     #print('before lvc:')
                     #print(path)
                     path = lvc(path, obc[i], IsInCollision, step_sz=step_sz)

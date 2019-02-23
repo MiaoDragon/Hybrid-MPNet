@@ -57,6 +57,7 @@ def lvc(path, obc, IsInCollision, step_sz=DEFAULT_STEP):
 def neural_replan(mpNet, path, obc, obs, IsInCollision, unnormalize, init_plan_flag, step_sz=DEFAULT_STEP):
     if init_plan_flag:
         # if it is the initial plan, then we just do neural_replan
+        print('initial plan...')
         MAX_LENGTH = 80
         mini_path = neural_replanner(mpNet, path[0], path[-1], obc, obs, IsInCollision, \
                                      unnormalize, MAX_LENGTH, step_sz=step_sz)

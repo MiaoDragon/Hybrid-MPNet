@@ -137,7 +137,8 @@ def main(args):
                     elif (t > 3):
                         step_sz = 0.02
                     unnormalize_func = lambda x: unnormalize(x, args.world_size)
-                    path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, unnormalize_func, step_sz=step_sz)
+                    path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
+                                         unnormalize_func, t==0, step_sz=step_sz)
                     path = lvc(path, obc[i], IsInCollision, step_sz=step_sz)
                     if feasibility_check(path,obc[i], IsInCollision, step_sz=0.01):
                         fp = True
