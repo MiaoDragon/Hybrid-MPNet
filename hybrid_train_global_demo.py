@@ -15,7 +15,6 @@ import argparse
 import os
 import torch
 import data_loader_2d, data_loader_r3d
-from data_loader import *
 from torch.autograd import Variable
 import copy
 import os
