@@ -20,6 +20,7 @@ import copy
 import os
 import random
 import time
+import pickle
 from utility import *
 from plan_general import *
 import plan_s2d, plan_c2d, plan_r3d
