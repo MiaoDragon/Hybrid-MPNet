@@ -24,15 +24,14 @@ import os
 import torch
 from gem_eval import eval_tasks
 # collision checker
-import plan_s2d, plan_c2d
-
-from data_loader import load_test_dataset
+import plan_s2d, plan_c2d, plan_r3d
+import data_loader_2d, data_loader_r3d
 from torch.autograd import Variable
 import copy
 import os
 import random
 from utility import *
-import utility_s2d, utility_c2d
+import utility_s2d, utility_c2d, utility_r3d
 def main(args):
     # set seed
     torch_seed = np.random.randint(low=0, high=1000)
@@ -54,16 +53,26 @@ def main(args):
     # setup evaluation function
     if args.env_type == 's2d':
         IsInCollision = plan_s2d.IsInCollision
+        load_test_dataset = data_loader_2d.load_test_dataset
         normalize = utility_s2d.normalize
         unnormalize = utility_s2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model.MLP(args.mlp_input_size, args.output_size)
     elif args.env_type == 'c2d':
         IsInCollision = plan_c2d.IsInCollision
+        load_test_dataset = data_loader_2d.load_test_dataset
         normalize = utility_c2d.normalize
         unnormalize = utility_c2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model_c2d.MLP(args.mlp_input_size, args.output_size)
+    elif args.env_type == 'r3d':
+        IsInCollision = plan_r3d.IsInCollision
+        load_test_dataset = data_loader_r3d.load_test_dataset
+        normalize = utility_r3d.normalize
+        unnormalize = utility_r3d.unnormalize
+        mpNet.encoder = CAE_r3d.Encoder()
+        mpNet.mlp = model.MLP(args.mlp_input_size, args.output_size)
+
     # load previously trained model if start epoch > 0
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:

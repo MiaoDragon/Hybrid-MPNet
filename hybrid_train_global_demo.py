@@ -14,6 +14,7 @@ import numpy as np
 import argparse
 import os
 import torch
+import data_loader_2d, data_loader_r3d
 from data_loader import *
 from torch.autograd import Variable
 import copy
@@ -22,8 +23,8 @@ import random
 import time
 from utility import *
 from plan_general import *
-import plan_s2d, plan_c2d
-import utility_s2d, utility_c2d
+import plan_s2d, plan_c2d, plan_r3d
+import utility_s2d, utility_c2d, utility_r3d
 DEFAULT_STEP = 0.05
 def main(args):
     # set seed
@@ -42,17 +43,26 @@ def main(args):
                 args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
     # Depending on env type, load the planning function
     if args.env_type == 's2d':
+        load_dataset = data_loader_2d.load_dataset
         IsInCollision = plan_s2d.IsInCollision
         normalize = utility_s2d.normalize
         unnormalize = utility_s2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model.MLP(args.mlp_input_size, args.output_size)
     elif args.env_type == 'c2d':
+        load_dataset = data_loader_2d.load_dataset
         IsInCollision = plan_c2d.IsInCollision
         normalize = utility_c2d.normalize
         unnormalize = utility_c2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model_c2d.MLP(args.mlp_input_size, args.output_size)
+    elif args.env_type == 'r3d':
+        load_dataset = data_loader_r3d.load_dataset
+        IsInCollision = plan_r3d.IsInCollision
+        normalize = utility_r3d.normalize
+        unnormalize = utility_r3d.unnormalize
+        mpNet.encoder = CAE_r3d.Encoder()
+        mpNet.mlp = model.MLP(args.mlp_input_size, args.output_size)
 
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)
     if args.start_epoch > 0:
