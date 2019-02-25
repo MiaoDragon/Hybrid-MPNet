@@ -42,21 +42,21 @@ def main(args):
                 args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
     # Depending on env type, load the planning function
     if args.env_type == 's2d':
-        load_dataset = data_loader_2d.load_dataset
+        load_raw_dataset = data_loader_2d.load_raw_dataset
         IsInCollision = plan_s2d.IsInCollision
         normalize = utility_s2d.normalize
         unnormalize = utility_s2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model.MLP(args.mlp_input_size, args.output_size)
     elif args.env_type == 'c2d':
-        load_dataset = data_loader_2d.load_dataset
+        load_raw_dataset = data_loader_2d.load_raw_dataset
         IsInCollision = plan_c2d.IsInCollision
         normalize = utility_c2d.normalize
         unnormalize = utility_c2d.unnormalize
         mpNet.encoder = CAE.Encoder()
         mpNet.mlp = model_c2d.MLP(args.mlp_input_size, args.output_size)
     elif args.env_type == 'r3d':
-        load_dataset = data_loader_r3d.load_dataset
+        load_raw_dataset = data_loader_r3d.load_raw_dataset
         IsInCollision = plan_r3d.IsInCollision
         normalize = utility_r3d.normalize
         unnormalize = utility_r3d.unnormalize
