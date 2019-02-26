@@ -14,7 +14,7 @@ import numpy as np
 import argparse
 import os
 import torch
-import data_loader_2d, data_loader_r3d
+import data_loader_2d, data_loader_r3d, data_loader_r2d
 from torch.autograd import Variable
 import copy
 import os
@@ -23,8 +23,8 @@ import time
 import pickle
 from utility import *
 from plan_general import *
-import plan_s2d, plan_c2d, plan_r3d
-import utility_s2d, utility_c2d, utility_r3d
+import plan_s2d, plan_c2d, plan_r3d, plan_r2d
+import utility_s2d, utility_c2d, utility_r3d, utility_r2d
 DEFAULT_STEP = 0.05
 def main(args):
     # set seed
@@ -62,6 +62,15 @@ def main(args):
         unnormalize = utility_r3d.unnormalize
         CAE = CAE_r3d
         MLP = model.MLP
+    elif args.env_type == 'r2d':
+        # 3d state space
+        load_raw_dataset = data_loader_r2d.load_raw_dataset
+        IsInCollision = plan_r2d.IsInCollision
+        normalize = utility_r2d.normalize
+        unnormalize = utility_r2d.unnormalize
+        CAE = CAE_2d
+        MLP = model.MLP
+        args.world_size = [20., 20., np.pi]
     mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
                 args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step, \
                 CAE, MLP)
@@ -245,7 +254,7 @@ parser.add_argument('--env_type', type=str, default='s2d')
 
 parser.add_argument('--pretrain_path', type=int, default=200, help='number of paths for pretraining before hybrid train')
 parser.add_argument('--include_suc_path', type=int, default=0, help='0 for not including neural path into replay buffer')
-parser.add_argument('--world_size', type=int, default=50, help='boundary of world')
+parser.add_argument('--world_size', nargs='+', type=float, default=20., help='boundary of world')
 args = parser.parse_args()
 print(args)
 main(args)
