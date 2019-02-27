@@ -115,8 +115,8 @@ def neural_replanner(mpNet, start, goal, obc, obs, IsInCollision, unnormalize, M
             ip1=to_var(ip1)
             start=mpNet(ip1).squeeze(0)
             # unnormalize to world size
-            start = unnormalize(start)
             start=start.data.cpu()
+            start = unnormalize(start)
             pA.append(start)
             tree=1
         else:
@@ -124,8 +124,8 @@ def neural_replanner(mpNet, start, goal, obc, obs, IsInCollision, unnormalize, M
             ip2=to_var(ip2)
             goal=mpNet(ip2).squeeze(0)
             # unnormalize to world size
-            goal = unnormalize(goal)
             goal=goal.data.cpu()
+            goal = unnormalize(goal)
             pB.append(goal)
             tree=0
         target_reached=steerTo(start, goal, obc, IsInCollision, step_sz=step_sz)
