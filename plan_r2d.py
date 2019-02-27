@@ -51,6 +51,7 @@ def line_intersect(a0,a1,b0,b1):
     return False
 
 def IsInCollision(stateIn,obc):
+    stateIn = stateIn.numpy()
     if abs(stateIn[0]) > 20. or abs(stateIn[1]) > 20.:
         return True
     size = 5.
