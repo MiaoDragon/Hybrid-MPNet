@@ -12,6 +12,7 @@ def normalize(x, bound):
         x[:,-len(bound):] = x[:,-len(bound):] / bound
     else:
         x = x / bound
+    print(x.requires_grad)
     return x
 def unnormalize(x, bound):
     # normalize to -1 ~ 1  (bound can be a tensor)
