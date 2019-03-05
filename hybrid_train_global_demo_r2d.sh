@@ -5,4 +5,3 @@ python3 hybrid_train_global_demo.py --model_path ../hybrid_res/global/r2d/no_inc
 --start_epoch 0 --MAX_NEURAL_REPLAN 11 --pretrain_path 5000 --data_path /media/arclabdl1/HD1/Ahmed/rigid-body/dataset/ \
 --include_suc_path 0 --world_size 20 --env_type r2d \
 --total_input_size 2806 --AE_input_size 2800 --mlp_input_size 34 --output_size 3
-# 100x4000
