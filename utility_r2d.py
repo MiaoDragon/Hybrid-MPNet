@@ -4,7 +4,6 @@ import copy
 import numpy as np
 def normalize(x, bound):
     # normalize to -1 ~ 1  (bound can be a tensor)
-    print(x.requires_grad)
     bound = torch.tensor(bound)
     if len(x[0]) != len(bound):
         # then the proceding is obstacle
