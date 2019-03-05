@@ -126,7 +126,6 @@ def main(args):
         mpNet.zero_grad()
         bi=to_var(bi)
         bt=to_var(bt)
-        print(bi.requires_grad)
         mpNet.observe(bi, 0, bt)
         num_path_trained += 1
 
