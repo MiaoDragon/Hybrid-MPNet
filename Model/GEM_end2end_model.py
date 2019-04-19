@@ -51,10 +51,12 @@ class End2EndMPNet(nn.Module):
         # set observed task to empty
         self.observed_tasks = []
         self.old_task = -1
-
-    def set_opt(self, opt, lr=1e-2):
+    def set_opt(self, opt, lr=1e-2, momentum=None):
         # edit: can change optimizer type when setting
-        self.opt = opt(list(self.encoder.parameters())+list(self.mlp.parameters()), lr=lr)
+        if momentum is None:
+            self.opt = opt(list(self.encoder.parameters())+list(self.mlp.parameters()), lr=lr)
+        else:
+            self.opt = opt(list(self.encoder.parameters())+list(self.mlp.parameters()), lr=lr, momentum=momentum)
     def forward(self, x):
         # xobs is the input to encoder
         # x is the input to mlp

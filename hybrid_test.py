@@ -18,6 +18,7 @@ import Model.model as model
 import Model.model_c2d as model_c2d
 import Model.AE.CAE_r3d as CAE_r3d
 import Model.AE.CAE as CAE_2d
+import Model.model_c2d_simple as model_c2d_simple
 import numpy as np
 import argparse
 import os
@@ -72,7 +73,8 @@ def main(args):
         normalize = utility_r2d.normalize
         unnormalize = utility_r2d.unnormalize
         CAE = CAE_2d
-        MLP = model.MLP
+        #MLP = model.MLP
+        MLP = model_c2d_simple.MLP
         args.world_size = [20., 20., np.pi]
     if args.memory_type == 'res':
         mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
@@ -97,7 +99,14 @@ def main(args):
         mpNet.cuda()
         mpNet.mlp.cuda()
         mpNet.encoder.cuda()
-        mpNet.set_opt(torch.optim.Adagrad, lr=args.learning_rate)
+        if args.opt == 'Adagrad':
+            mpNet.set_opt(torch.optim.Adagrad, lr=args.learning_rate)
+        elif args.opt == 'Adam':
+            mpNet.set_opt(torch.optim.Adam, lr=args.learning_rate)
+        elif args.opt == 'SGD':
+            mpNet.set_opt(torch.optim.SGD, lr=args.learning_rate, momentum=0.9)
+        elif args.opt == 'ASGD':
+            mpNet.set_opt(torch.optim.ASGD, lr=args.learning_rate)
     if args.start_epoch > 0:
         load_opt_state(mpNet, os.path.join(args.model_path, model_path))
     # load train and test data

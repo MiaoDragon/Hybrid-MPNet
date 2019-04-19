@@ -10,6 +10,7 @@ import Model.model as model
 import Model.model_c2d as model_c2d
 import Model.AE.CAE_r3d as CAE_r3d
 import Model.AE.CAE as CAE_2d
+import Model.model_c2d_simple as model_c2d_simple
 import numpy as np
 import argparse
 import os
@@ -25,7 +26,7 @@ from utility import *
 from plan_general import *
 import plan_s2d, plan_c2d, plan_r3d, plan_r2d
 import utility_s2d, utility_c2d, utility_r3d, utility_r2d
-DEFAULT_STEP = 0.05
+DEFAULT_STEP = 2.
 def main(args):
     # set seed
     torch_seed = np.random.randint(low=0, high=1000)
@@ -69,7 +70,8 @@ def main(args):
         normalize = utility_r2d.normalize
         unnormalize = utility_r2d.unnormalize
         CAE = CAE_2d
-        MLP = model.MLP
+        #MLP = model.MLP
+        MLP = model_c2d_simple.MLP
         args.world_size = [20., 20., np.pi]
     mpNet = End2EndMPNet(args.total_input_size, args.AE_input_size, args.mlp_input_size, \
                 args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step, \
@@ -87,7 +89,15 @@ def main(args):
         mpNet.cuda()
         mpNet.mlp.cuda()
         mpNet.encoder.cuda()
-        mpNet.set_opt(torch.optim.Adagrad, lr=1e-2)
+        if args.opt == 'Adagrad':
+            mpNet.set_opt(torch.optim.Adagrad, lr=args.learning_rate)
+        elif args.opt == 'Adam':
+            mpNet.set_opt(torch.optim.Adam, lr=args.learning_rate)
+        elif args.opt == 'SGD':
+            mpNet.set_opt(torch.optim.SGD, lr=args.learning_rate, momentum=0.9)
+        elif args.opt == 'ASGD':
+            mpNet.set_opt(torch.optim.ASGD, lr=args.learning_rate)
+        #mpNet.set_opt(torch.optim.Adagrad, lr=1e-2)
     if args.start_epoch > 0:
         load_opt_state(mpNet, os.path.join(args.model_path, model_path))
 
@@ -151,11 +161,11 @@ def main(args):
                 for t in range(args.MAX_NEURAL_REPLAN):
                 # adaptive step size on replanning attempts
                     if (t == 2):
-                        step_sz = 0.04
+                        step_sz = 1.2
                     elif (t == 3):
-                        step_sz = 0.03
+                        step_sz = 0.5
                     elif (t > 3):
-                        step_sz = 0.02
+                        step_sz = 0.1
                     normalize_func = lambda x: normalize(x, args.world_size)
                     unnormalize_func = lambda x: unnormalize(x, args.world_size)
                     path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
@@ -252,6 +262,7 @@ parser.add_argument('--data_path', type=str, default='../data/simple/')
 parser.add_argument('--start_epoch', type=int, default=0)
 parser.add_argument('--MAX_NEURAL_REPLAN', type=int, default=1)
 parser.add_argument('--env_type', type=str, default='s2d')
+parser.add_argument('--opt', type=str, default='Adagrad')
 
 parser.add_argument('--pretrain_path', type=int, default=200, help='number of paths for pretraining before hybrid train')
 parser.add_argument('--include_suc_path', type=int, default=0, help='0 for not including neural path into replay buffer')

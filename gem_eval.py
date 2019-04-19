@@ -4,13 +4,12 @@ import torch.nn as nn
 import numpy as np
 import os
 import pickle
-#from model import MLP
 from torch.autograd import Variable
 import math
 import time
 from plan_general import *
 
-def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func=lambda x: x, unnormalize_func=lambda x: x):
+def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func = lambda x:x, unnormalize_func=lambda x: x, time_flag=False):
     obc, obs, paths, path_lengths = test_data
     obs = torch.from_numpy(obs)
     fes_env = []   # list of list
@@ -26,6 +25,7 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func=lambda 
         # feasible paths for each env
         for j in range(len(paths[0])):
             time0 = time.time()
+            time_norm = 0.
             fp = 0 # indicator for feasibility
             print ("step: i="+str(i)+" j="+str(j))
             #for j in range(0,2):
@@ -46,20 +46,18 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func=lambda 
                 for t in range(MAX_NEURAL_REPLAN):
                 # adaptive step size on replanning attempts
                     if (t == 2):
-                        step_sz = 0.04
+                        step_sz = 1.2
                     elif (t == 3):
-                        step_sz = 0.03
+                        step_sz = 0.5
                     elif (t > 3):
-                        step_sz = 0.02
-                    path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
-                                         normalize_func, unnormalize_func, t==0, step_sz=step_sz)
-                    #print('before lvc:')
-                    #print(path)
+                        step_sz = 0.1
+                    if time_flag:
+                        path, time_norm = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
+                                            normalize_func, unnormalize_func, t==0, step_sz=step_sz, time_flag=time_flag)
+                    else:
+                        path = neural_replan(mpNet, path, obc[i], obs[i], IsInCollision, \
+                                            normalize_func, unnormalize_func, t==0, step_sz=step_sz, time_flag=time_flag)
                     path = lvc(path, obc[i], IsInCollision, step_sz=step_sz)
-                    #print('iteration %d' % (t))
-                    #print(path)
-                    #print('feasible on step_sz? %f' % (step_sz))
-                    #print(feasibility_check(path,obc[i], IsInCollision, step_sz=step_sz))
                     if feasibility_check(path, obc[i], IsInCollision, step_sz=0.01):
                         fp = 1
                         print('feasible, ok!')
@@ -67,6 +65,7 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func=lambda 
             if fp:
                 # only for successful paths
                 time1 = time.time() - time0
+                time1 -= time_norm
                 time_path.append(time1)
                 print('test time: %f' % (time1))
             fes_path.append(fp)
@@ -76,6 +75,7 @@ def eval_tasks(mpNet, test_data, filename, IsInCollision, normalize_func=lambda 
         fes_env.append(fes_path)
         valid_env.append(valid_path)
         print('accuracy up to now: %f' % (np.sum(fes_env) / np.sum(valid_env)))
-    pickle.dump(time_env, open(filename, "wb" ))
+    if filename is not None:
+        pickle.dump(time_env, open(filename, "wb" ))
         #print(fp/tp)
     return np.array(fes_env), np.array(valid_env)
