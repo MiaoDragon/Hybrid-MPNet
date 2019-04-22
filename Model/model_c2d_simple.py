@@ -12,11 +12,11 @@ class MLP(nn.Module):
 		self.fc = nn.Sequential(
 		nn.Linear(input_size, 1024),nn.PReLU(),nn.Dropout(),
 		nn.Linear(1024, 768),nn.PReLU(),nn.Dropout(),
-		nn.Linear(768, 256),nn.PReLU(), nn.Dropout(),
-		nn.Linear(256, 128),nn.PReLU(), nn.Dropout(),
-		nn.Linear(128, 64),nn.PReLU(), nn.Dropout(),
-		nn.Linear(64, 32),nn.PReLU(),
-		nn.Linear(32, output_size))  # added tanh to make sure output is -1 ~ 1
+		nn.Linear(768, 512),nn.PReLU(), nn.Dropout(),
+		nn.Linear(512, 512),nn.PReLU(), nn.Dropout(),
+		nn.Linear(512, 128),nn.PReLU(), nn.Dropout(),
+		nn.Linear(128, 64),nn.PReLU(),
+		nn.Linear(64, output_size))  # added tanh to make sure output is -1 ~ 1
 
 	def forward(self, x):
 		out = self.fc(x)
