@@ -175,6 +175,8 @@ parser.add_argument('--start_epoch', type=int, default=0)
 parser.add_argument('--memory_type', type=str, default='res', help='res for reservoid, rand for random sampling')
 parser.add_argument('--env_type', type=str, default='s2d', help='s2d for simple 2d, c2d for complex 2d')
 parser.add_argument('--world_size', nargs='+', type=float, default=20., help='boundary of world')
+parser.add_argument('--opt', type=str, default='Adagrad')
+
 args = parser.parse_args()
 print(args)
 main(args)
