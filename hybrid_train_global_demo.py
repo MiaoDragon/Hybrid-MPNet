@@ -175,7 +175,7 @@ def main(args):
                         fp = True
                         print('feasible, ok!')
                         break
-                    if time.time() - time0 >= 3.:
+                    if time.time() - time0 >= 2.:
                         # if it takes too long, then treat as failure
                         break
                 print('number of samples trained up to now: %d' % (num_trained_samples))
