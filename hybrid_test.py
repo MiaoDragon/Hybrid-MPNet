@@ -13,7 +13,6 @@ here for simplicity, we just use single-process to simulate this scenario
 '''
 from __future__ import print_function
 from Model.GEM_end2end_model import End2EndMPNet
-#from GEM_end2end_model_rand import End2EndMPNet as End2EndMPNet_rand
 import Model.model as model
 import Model.model_c2d as model_c2d
 import Model.AE.CAE_r3d as CAE_r3d
@@ -81,8 +80,6 @@ def main(args):
                     args.output_size, 'deep', args.n_tasks, args.n_memories, args.memory_strength, args.grad_step, \
                     CAE, MLP)
     elif args.memory_type == 'rand':
-        #mpNet = End2EndMPNet_rand(args.mlp_input_size, args.output_size, 'deep', \
-        #            args.n_tasks, args.n_memories, args.memory_strength, args.grad_step)
         pass
     # load previously trained model if start epoch > 0
     model_path='mpNet_cont_train_epoch_%d.pkl' %(args.start_epoch)

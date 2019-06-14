@@ -13,8 +13,6 @@ class MLP(nn.Module):
 		nn.Linear(input_size, 1280),nn.PReLU(),nn.Dropout(),
 		nn.Linear(1280, 1024),nn.PReLU(),nn.Dropout(),
 		nn.Linear(1024, 768),nn.PReLU(),nn.Dropout(),
-		#nn.Linear(768, 512),nn.PReLU(),nn.Dropout(),
-		#nn.Linear(512, 384),nn.PReLU(),nn.Dropout(),
 		nn.Linear(768, 256),nn.PReLU(), nn.Dropout(),
 		nn.Linear(256, 256),nn.PReLU(), nn.Dropout(),
 		nn.Linear(256, 128),nn.PReLU(), nn.Dropout(),

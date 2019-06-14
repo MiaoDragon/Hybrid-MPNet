@@ -1,3 +1,4 @@
+cd ..
 python3 hybrid_test.py --model_path ../hybrid_res/global/r3d/no_include/ \
 --grad_step 1 --learning_rate 0.01 \
 --memory_strength 0.5 --n_memories 10000 \
@@ -8,3 +9,4 @@ python3 hybrid_test.py --model_path ../hybrid_res/global/r3d/no_include/ \
 --unseen_N 10 --unseen_NP 2000 --unseen_s 100 --unseen_sp 0
 # seen: 100, 200, 0, 4000
 # unseen: 10, 2000, 100, 0
+cd exp
